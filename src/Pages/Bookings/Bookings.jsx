@@ -2,15 +2,29 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../Providers/AuthProvider";
 import BookingRow from "./BookingRow";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const Bookings = () => {
+  const navigate = useNavigate()
   const { user } = useContext(AuthContext);
   const [bookings, setBookings] = useState([]);
-  const url = `http://localhost:5000/bookings?email=${user?.email}`;
+  const url = `https://car-doctor-server-nine-azure.vercel.app/bookings?email=${user?.email}`;
   useEffect(() => {
-    fetch(url)
+    fetch(url, {
+      method : "GET", 
+      headers : {
+        authorization : `Bearer ${localStorage.getItem("car-access-token")}`
+      }
+    })
       .then((res) => res.json())
-      .then((data) => setBookings(data));
+      .then((data) => {
+        if(!data.error){
+          setBookings(data)
+        }
+        else{
+          navigate("/")
+        }
+      });
   }, [url]);
   const handleDelete = (id) => {
     Swal.fire({
@@ -23,7 +37,7 @@ const Bookings = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:5000/bookings/${id}`, {
+        fetch(`https://car-doctor-server-nine-azure.vercel.app/bookings/${id}`, {
             method : "DELETE"
         })
           .then((res) => res.json())
@@ -49,7 +63,7 @@ const Bookings = () => {
       confirmButtonText: "Yes, update it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:5000/bookings/${id}`, {
+        fetch(`https://car-doctor-server-nine-azure.vercel.app/bookings/${id}`, {
             method : "PATCH",
             headers : {
                 "content-type" : "application/json"

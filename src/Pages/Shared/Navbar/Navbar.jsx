@@ -6,7 +6,9 @@ const Navbar = () => {
   const {user, logOut} = useContext(AuthContext)
     const handleLogOut = () =>{
       logOut()
-      .then(()=>{})
+      .then(()=>{
+        
+      })
       .catch(error =>{
         console.log(error);
       })
@@ -19,7 +21,6 @@ const Navbar = () => {
           <li><Link to="/bookings">My Bookings</Link></li> 
           <li><button onClick={handleLogOut}>LogOut</button></li> 
           </>: <li><Link to="/login">Login</Link></li>
-          
         }
     </>
   return (
